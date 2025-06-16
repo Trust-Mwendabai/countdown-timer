@@ -78,6 +78,13 @@
   </style>
 </head>
 <body id="mainBody" class="d-flex flex-column min-vh-100">
+  <!-- Theme Switcher -->
+  <div class="theme-switcher">
+    <button id="themeSwitchBtn" class="btn btn-floating">
+      <i class="fas fa-moon"></i>
+    </button>
+  </div>
+
   <div class="container my-5">
     <header class="text-center mb-5">
       <h1 class="display-4 mb-3">🌟 Event Countdown Timer</h1>
@@ -85,20 +92,25 @@
     </header>
 
     <nav>
-      <ul class="nav nav-tabs" id="myTab" role="tablist">
+      <ul class="nav nav-tabs nav-fill" id="myTab" role="tablist">
         <li class="nav-item" role="presentation">
           <button class="nav-link active" id="setup-tab" data-bs-toggle="tab" data-bs-target="#setup" type="button" role="tab">
-            <i class="fas fa-cog"></i> Setup
+            <i class="fas fa-cog"></i> <span>Setup</span>
           </button>
         </li>
         <li class="nav-item" role="presentation">
           <button class="nav-link" id="countdown-tab" data-bs-toggle="tab" data-bs-target="#countdownDisplay" type="button" role="tab">
-            <i class="fas fa-hourglass-start"></i> Countdown
+            <i class="fas fa-hourglass-start"></i> <span>Countdown</span>
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="saved-tab" data-bs-toggle="tab" data-bs-target="#saved" type="button" role="tab">
+            <i class="fas fa-save"></i> <span>Saved</span>
           </button>
         </li>
         <li class="nav-item" role="presentation">
           <button class="nav-link" id="info-tab" data-bs-toggle="tab" data-bs-target="#info" type="button" role="tab">
-            <i class="fas fa-info-circle"></i> Info
+            <i class="fas fa-info-circle"></i> <span>Info</span>
           </button>
         </li>
       </ul>
@@ -118,6 +130,14 @@
             </div>
 
             <div class="mb-4">
+              <label for="eventDescription" class="form-label">
+                <i class="fas fa-align-left"></i> Event Description
+              </label>
+              <textarea id="eventDescription" class="form-control" rows="3" 
+                placeholder="Add details about your event (optional)"></textarea>
+            </div>
+
+            <div class="mb-4">
               <label for="eventDate" class="form-label">
                 <i class="fas fa-calendar-alt"></i> Event Date & Time
               </label>
@@ -125,18 +145,26 @@
               <div class="invalid-feedback">Please select a valid date and time.</div>
             </div>
 
-            <div class="mb-4">
-              <label for="bgColorPicker" class="form-label">
-                <i class="fas fa-palette"></i> Theme Color
-              </label>
-              <input type="color" id="bgColorPicker" class="form-control form-control-color w-100" value="#e0f7fa">
+            <div class="row mb-4">
+              <div class="col-md-6">
+                <label for="bgColorPicker" class="form-label">
+                  <i class="fas fa-palette"></i> Background Color
+                </label>
+                <input type="color" id="bgColorPicker" class="form-control form-control-color w-100" value="#e0f7fa">
+              </div>
+              <div class="col-md-6">
+                <label for="themeColorPicker" class="form-label">
+                  <i class="fas fa-paint-brush"></i> Theme Color
+                </label>
+                <input type="color" id="themeColorPicker" class="form-control form-control-color w-100" value="#0d6efd">
+              </div>
             </div>
 
             <div class="d-grid gap-2">
-              <button type="submit" class="btn btn-success">
+              <button type="submit" class="btn btn-success btn-lg">
                 <i class="fas fa-play"></i> Start Countdown
               </button>
-              <button type="button" onclick="clearCountdown()" class="btn btn-danger">
+              <button type="button" onclick="clearCountdown()" class="btn btn-outline-danger">
                 <i class="fas fa-trash-alt"></i> Clear Countdown
               </button>
             </div>
@@ -146,14 +174,20 @@
 
       <section class="tab-pane fade" id="countdownDisplay" role="tabpanel">
         <div class="countdown-card text-center">
-          <h2 id="titleDisplay" class="mb-4">Your Event Title</h2>
+          <h2 id="titleDisplay" class="mb-3">Your Event Title</h2>
+          <p id="descriptionDisplay" class="lead mb-4">Event description will appear here</p>
+          
+          <div class="progress mb-4" style="height: 10px;">
+            <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"></div>
+          </div>
+
           <div class="row g-4" id="countdown">
             <div class="col-6 col-md-3">
               <div class="countdown-item">
                 <div class="countdown-icon">
                   <i class="fas fa-calendar-day"></i>
                 </div>
-                <span id="days">0</span>
+                <span id="days">00</span>
                 <div class="text-muted">Days</div>
               </div>
             </div>
@@ -162,7 +196,7 @@
                 <div class="countdown-icon">
                   <i class="fas fa-clock"></i>
                 </div>
-                <span id="hours">0</span>
+                <span id="hours">00</span>
                 <div class="text-muted">Hours</div>
               </div>
             </div>
@@ -171,7 +205,7 @@
                 <div class="countdown-icon">
                   <i class="fas fa-hourglass-half"></i>
                 </div>
-                <span id="minutes">0</span>
+                <span id="minutes">00</span>
                 <div class="text-muted">Minutes</div>
               </div>
             </div>
@@ -180,15 +214,33 @@
                 <div class="countdown-icon">
                   <i class="fas fa-stopwatch"></i>
                 </div>
-                <span id="seconds">0</span>
+                <span id="seconds">00</span>
                 <div class="text-muted">Seconds</div>
               </div>
             </div>
           </div>
+
           <div id="shareSection" class="mt-4">
-            <button class="btn btn-primary" onclick="shareCountdown()">
-              <i class="fas fa-share-alt"></i> Share Countdown
-            </button>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+              <button class="btn btn-primary" onclick="shareCountdown()">
+                <i class="fas fa-share-alt"></i> <span>Share</span>
+              </button>
+              <button class="btn btn-info" onclick="exportToCalendar()">
+                <i class="fas fa-calendar-plus"></i> <span>Add to Calendar</span>
+              </button>
+              <button class="btn btn-success" onclick="saveAsNew()">
+                <i class="fas fa-save"></i> <span>Save as New</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="tab-pane fade" id="saved" role="tabpanel">
+        <div class="countdown-card">
+          <h2><i class="fas fa-save"></i> Saved Countdowns</h2>
+          <div id="savedCountdowns" class="list-group">
+            <!-- Saved countdowns will be dynamically inserted here -->
           </div>
         </div>
       </section>
@@ -196,26 +248,86 @@
       <section class="tab-pane fade" id="info" role="tabpanel">
         <div class="countdown-card">
           <h2><i class="fas fa-info-circle"></i> About This Timer</h2>
-          <div class="row">
+          
+          <div class="row g-4">
             <div class="col-md-6">
-              <h4>📝 Features</h4>
-              <ul class="list-unstyled">
-                <li><i class="fas fa-check text-success"></i> Customizable title and date</li>
-                <li><i class="fas fa-check text-success"></i> Beautiful theme colors</li>
-                <li><i class="fas fa-check text-success"></i> Automatic data saving</li>
-                <li><i class="fas fa-check text-success"></i> Share with friends</li>
-                <li><i class="fas fa-check text-success"></i> Mobile responsive</li>
-              </ul>
+              <div class="feature-card">
+                <h4>📝 Features</h4>
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item">
+                    <i class="fas fa-check text-success"></i> Multiple countdown support
+                  </li>
+                  <li class="list-group-item">
+                    <i class="fas fa-check text-success"></i> Custom themes & colors
+                  </li>
+                  <li class="list-group-item">
+                    <i class="fas fa-check text-success"></i> Progress tracking
+                  </li>
+                  <li class="list-group-item">
+                    <i class="fas fa-check text-success"></i> Calendar integration
+                  </li>
+                  <li class="list-group-item">
+                    <i class="fas fa-check text-success"></i> Social sharing
+                  </li>
+                </ul>
+              </div>
             </div>
+            
             <div class="col-md-6">
-              <h4>💡 Tips</h4>
-              <ul class="list-unstyled">
-                <li><i class="fas fa-lightbulb text-warning"></i> Set multiple countdowns</li>
-                <li><i class="fas fa-lightbulb text-warning"></i> Share via social media</li>
-                <li><i class="fas fa-lightbulb text-warning"></i> Use dark mode at night</li>
-                <li><i class="fas fa-lightbulb text-warning"></i> Bookmark for quick access</li>
-              </ul>
+              <div class="feature-card">
+                <h4>💡 Quick Tips</h4>
+                <div class="accordion" id="tipsAccordion">
+                  <div class="accordion-item">
+                    <h2 class="accordion-header">
+                      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#tip1">
+                        How to Create a Countdown
+                      </button>
+                    </h2>
+                    <div id="tip1" class="accordion-collapse collapse show" data-bs-parent="#tipsAccordion">
+                      <div class="accordion-body">
+                        Enter your event details, pick your colors, and hit Start Countdown. Your countdown will be saved automatically!
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="accordion-item">
+                    <h2 class="accordion-header">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#tip2">
+                        Sharing Your Countdown
+                      </button>
+                    </h2>
+                    <div id="tip2" class="accordion-collapse collapse" data-bs-parent="#tipsAccordion">
+                      <div class="accordion-body">
+                        Use the share button to send your countdown to friends via social media or copy the link directly.
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="accordion-item">
+                    <h2 class="accordion-header">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#tip3">
+                        Managing Multiple Countdowns
+                      </button>
+                    </h2>
+                    <div id="tip3" class="accordion-collapse collapse" data-bs-parent="#tipsAccordion">
+                      <div class="accordion-body">
+                        Save multiple countdowns and switch between them easily using the Saved tab.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
+          </div>
+
+          <div class="mt-4 p-4 bg-light rounded">
+            <h4>🔄 Recent Updates</h4>
+            <ul class="timeline">
+              <li>Added multiple countdown support</li>
+              <li>Implemented dark mode</li>
+              <li>Added calendar integration</li>
+              <li>Improved sharing options</li>
+            </ul>
           </div>
         </div>
       </section>
