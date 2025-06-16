@@ -38,3 +38,9 @@ function startCountdown() {
     document.getElementById("seconds").textContent = seconds;
   }, 1000);
 }
+document.querySelectorAll('.nav-link').forEach(tab => {
+    tab.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+  
